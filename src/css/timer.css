@@ -24,7 +24,7 @@
 
 .form {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 
 }
 input {
@@ -40,7 +40,7 @@ input {
 button {
     display: block;
     padding: 0;
-    width: 140px;
+    width: 150px;
     height: 50px;
     font-size: 26px;
     font-weight: 700;

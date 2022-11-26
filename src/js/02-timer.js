@@ -1,5 +1,7 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
+import "notiflix/dist/notiflix-3.2.5.min.css"
 
 const refs = {
     input: document.querySelector("input"),
@@ -11,8 +13,10 @@ const refs = {
 };
 
 refs.btn.setAttribute('disabled', true);
-let intervalId = null;
+
+let timerId = null;
 let userDate = null;
+let timerCheck = 0;
 
 const options = {
   enableTime: true,
@@ -21,47 +25,37 @@ const options = {
   minuteIncrement: 1,
     onClose(selectedDates) {
         userDate = selectedDates[0];
-        if (userDate <= Date.now()) {
-            return window.alert("Please choose a date in the future");
-        };
-        refs.btn.removeAttribute('disabled');
-        
-                       
-        // refs.btn.addEventListener('click', onClick);
-
-        // let timeBefoDate = 0;
-
-        // function onClick() {
-        //     const intervalId = setInterval(() => { 
-        //             timeBefoDate = convertMs(userDate - Date.now());
-        //             updateClockface(timeBefoDate);
-        //     }, 1000);
-        // }
-
-        
+        notValidDate(userDate);
     },
+};
+
+function notValidDate(userDate) {
+    if (userDate <= Date.now()) {
+         Notiflix.Notify.failure('Please choose a date in the future');
+    } else {
+        Notiflix.Notify.success('Good! You can start a timer!');
+        refs.btn.removeAttribute('disabled');
+    }
+    
+        
 };
 
 refs.btn.addEventListener('click', onClick);
 
-
 function onClick() {
-    intervalId = setInterval(() => {
-        timeBefoDate = convertMs(userDate - Date.now());
+    timerId = setInterval(() => {
+        timerCheck = userDate - Date.now();
+        timeBefoDate = padStart(convertMs(timerCheck));
         updateClockface(timeBefoDate);
+        console.log(timerCheck);
+        refs.btn.setAttribute('disabled', true);
+        refs.input.setAttribute('disabled', true);
+            
+        if (timerCheck < 1000) {
+            clearInterval(timerId);
+        }
     }, 1000); 
 };
-
-function stopTimer() {
-    if (timeBefoDate === 0)
-        clearInterval(intervalId)
-};
-
-
-
-
-
-
 
 const calendar = flatpickr("#datetime-picker", options);
 
@@ -73,7 +67,6 @@ function updateClockface({ days, hours, minutes, seconds }) {
 };
 
 function convertMs(ms) {
-  // Number of milliseconds per unit of time
   const second = 1000;
   const minute = second * 60;
   const hour = minute * 60;
@@ -82,16 +75,22 @@ function convertMs(ms) {
   // Remaining days
   const days = Math.floor(ms / day);
   // Remaining hours
-  const hours = String(Math.floor((ms % day) / hour)).padStart(2, '0');
+  const hours = Math.floor((ms % day) / hour);
   // Remaining minutes
-  const minutes = String(Math.floor(((ms % day) % hour) / minute)).padStart(2, '0');
+  const minutes = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  const seconds = String(Math.floor((((ms % day) % hour) % minute) / second)).padStart(2, '0');
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
   
   return { days, hours, minutes, seconds };
 };
 
-
+function padStart({ days, hours, minutes, seconds }) {
+    // const days = String(days).padStart(2, '0');
+    hours = String(hours).padStart(2, '0');
+    minutes = String(minutes).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    return { days, hours, minutes, seconds };
+};
 
 
 
