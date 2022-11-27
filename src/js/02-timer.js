@@ -43,7 +43,7 @@ refs.btn.addEventListener('click', onClick);
 function onClick() {
     timerId = setInterval(() => {
         timerCheck = userDate - Date.now();
-        timeBefoDate = padStart(convertMs(timerCheck));
+        const timeBefoDate = padStart(convertMs(timerCheck));
         updateClockface(timeBefoDate);
         refs.btn.setAttribute('disabled', true);
         refs.input.setAttribute('disabled', true);
