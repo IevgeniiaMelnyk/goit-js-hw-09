@@ -35,9 +35,7 @@ function notValidDate(userDate) {
     } else {
         Notiflix.Notify.success('Good! You can start a timer!');
         refs.btn.removeAttribute('disabled');
-    }
-    
-        
+    }    
 };
 
 refs.btn.addEventListener('click', onClick);
@@ -47,7 +45,6 @@ function onClick() {
         timerCheck = userDate - Date.now();
         timeBefoDate = padStart(convertMs(timerCheck));
         updateClockface(timeBefoDate);
-        console.log(timerCheck);
         refs.btn.setAttribute('disabled', true);
         refs.input.setAttribute('disabled', true);
             
